@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:33 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/20 19:10:39 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/20 20:09:22 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,15 +172,15 @@ static const sysc_t			SYSC[SYSC_NB] = {
 	   	.id = { 59, 11, 221, 11 },
 	 	.args = { AT_STR, AT_LST, AT_LST, 0 },
 	},{	.name = "execveat",
-	   	.id = {322, 387, 281, 358 },
+	   	.id = { 322, 387, 281, 358 },
 	 	.args = { AT_INT, AT_STR, AT_LST,
 			AT_LST, AT_INT, 0 },
 	},{	.name = "exit",
-	   	.id = {60, 1, 93, 1 },
-	 	.args = { 0, 0, 0, 0, 0, 0 },
+	   	.id = { 60, 1, 93, 1 },
+	 	.args = { AT_INT, 0 },
 	},{	.name = "exit_group",
-	   	.id = {231, 248, 94, 252 },
-	 	.args = { 0, 0, 0, 0, 0, 0 },
+	   	.id = { 231, 248, 94, 252 },
+	 	.args = { AT_INT, 0},
 	},{	.name = "faccessat",
 	   	.id = {269, 334, 48, 307 },
 	 	.args = { 0, 0, 0, 0, 0, 0 },
@@ -1276,8 +1276,6 @@ static void		print_oct(uint64_t val, int init) {
 	if (val / 8)
 		print_oct(val / 8, 0);
 	printf("%ld", val % 8);
-	if (init)
-		printf(", ");
 }
 
 static int	get_mem(int pid) {
@@ -1290,7 +1288,7 @@ static int	get_mem(int pid) {
 static char	*get_str(int fd, char *off) {
 	int				i;
 	char			str[BUFF_SZ + 2];
-	static char		result[BUFF_SZ * 3];
+	static char		result[BUFF_SZ * 5];
 
 	if (lseek(fd, (uint64_t)off, SEEK_SET) < 0)
 		return (NULL);
@@ -1309,7 +1307,7 @@ static char	*get_lst(int fd, char **off) {
 	int				i;
 	char			*str;
 	static char		*offs[BUFF_SZ + 2];
-	static char		strs[(BUFF_SZ + 2) * BUFF_SZ * 3];
+	static char		strs[(BUFF_SZ + 2) * BUFF_SZ * 5];
 
 	if (lseek(fd, (uint64_t)off, SEEK_SET) < 0)
 		return (NULL);
@@ -1320,7 +1318,7 @@ static char	*get_lst(int fd, char **off) {
 		if (!offs[i])
 			break;
 	}
-	bzero(strs, BUFF_SZ * 3 * (BUFF_SZ + 2));
+	bzero(strs, BUFF_SZ * 5 * (BUFF_SZ + 2));
 	strcat(strs, "[");
 	for (i = 0; i < BUFF_SZ + 2 && offs[i]; ++i) {
 		if (!(str = get_str(fd, offs[i])))
@@ -1340,10 +1338,14 @@ static int	close_ret(int fd, int ret) {
 	return (ret);
 }
 
-static void	set_color(char *color, col_op_t op) {
+void	set_color(char *color, col_op_t op) {
 	static char			col_stack[BUFF_SZ][COLOR_SZ];
-	static uint8_t		stack_sz = 1;
+	static uint8_t		init = 1, stack_sz = 0;
 
+	if (init) {
+		init = 0;
+		set_color(WHITE, CO_PUSH);
+	}
 	switch (op) {
 		case CO_PUSH:
 			strncpy(col_stack[stack_sz++],
@@ -1351,8 +1353,7 @@ static void	set_color(char *color, col_op_t op) {
 			printf("%s", color);
 			break;
 		default:
-			printf("%s", col_stack[stack_sz - 2]);
-			--stack_sz;
+			printf("%s", col_stack[--stack_sz - 1]);
 	}
 }
 
@@ -1371,10 +1372,12 @@ int			sysc_print(void *regs, int pid) {
 	for (i = 0; i < ARG_NB; ++i) {
 		switch (sysc->args[i]) {
 			case AT_UINT:
-				printf("%lu, ", ((uint64_t *)regs)[i]);
+				set_color(RED, CO_PUSH);
+				printf("%lu", ((uint64_t *)regs)[i]);
 				break;
 			case AT_INT:
-				printf("%ld, ", ((int64_t *)regs)[i]);
+				set_color(RED, CO_PUSH);
+				printf("%ld", ((int64_t *)regs)[i]);
 				break;
 			case AT_STR:
 				if (!(str = get_str(fd,
@@ -1382,8 +1385,6 @@ int			sysc_print(void *regs, int pid) {
 					close_ret(fd, -1);
 				set_color(GREEN, CO_PUSH);
 				printf("%s", str);
-				set_color(NULL, CO_POP);
-				printf(", ");
 				break;
 			case AT_LST:
 				if (!(str = get_lst(fd,
@@ -1391,23 +1392,25 @@ int			sysc_print(void *regs, int pid) {
 					close_ret(fd, -1);
 				set_color(CYAN, CO_PUSH);
 				printf("%s", str);
-				set_color(NULL, CO_POP);
-				printf(", ");
 				break;
 			case AT_HEX:
+				set_color(BLUE, CO_PUSH);
 				if (((uint64_t *)regs)[i])
-					printf("0x%lx, ", ((uint64_t *)regs)[i]);
+					printf("0x%lx", ((uint64_t *)regs)[i]);
 				else
-					printf("NULL, ");
+					printf("NULL");
 				break;
 			case AT_OCT:
+				set_color(BLUE, CO_PUSH);
 				print_oct(((uint64_t *)regs)[i], 1);
 				break;
 			default:
-				goto exit_loop;
+				goto ign;
 		}
+		set_color(NULL, CO_POP);
+		printf(", ");
 	}
-	exit_loop:
+	ign:
 		printf(i ? "\b\b) " : ") ");
 		set_color(NULL, CO_POP);
 		return (close_ret(fd, 0));

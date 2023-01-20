@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/20 19:02:50 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/20 19:33:16 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,12 @@
 
 #define COLOR_SZ	8
 
-#define	BLACK			"\e[1;30m"
 #define	RED				"\e[1;31m"
-#define	GREEN			"\e[1;32m"
+#define	GREEN			"\e[0;32m"
 #define	YELLOW			"\e[1;33m"
 #define	BLUE			"\e[1;34m"
-#define	PURPLE			"\e[1;35m"
-#define	CYAN			"\e[1;36m"
+#define	PURPLE			"\e[0;35m"
+#define	CYAN			"\e[0;36m"
 #define	WHITE			"\e[1;37m"
 
 typedef enum		col_op_e {
@@ -69,6 +68,7 @@ typedef struct		sysc_s {
 
 void		arch_set(arch_t arch);
 int			sysc_print(void *regs, int pid);
+void		set_color(char *color, col_op_t op);
 
 #endif
 
