@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/20 19:33:16 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/23 12:28:10 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ typedef enum		arch_e {
 }					arch_t;
 
 typedef enum		arg_typ_e {
-	AT_IGN,
-	AT_UINT,
-	AT_INT,
-	AT_HEX,
-	AT_OCT,
-	AT_STR,
-	AT_LST,
+	AT__,
+	AT_U,
+	AT_I,
+	AT_P,
+	AT_O,
+	AT_S,
+	AT_L,
 }					arg_typ_t;
 
 typedef struct		sysc_s {
