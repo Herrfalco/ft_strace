@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:33 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:50:05 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/25 17:07:13 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,30 +56,32 @@ const sysc_t		*sysc_get(void *regs) {
 }
 
 int			sysc_print(const sysc_t *sc, void *regs, int pid) {
-	int				fd;
-	uint64_t		i;
+	int				fd, ret;
 
 	if (sc) {
 		if ((fd = get_proc_mem(pid)) < 0)
 			return (-1);
 		set_col(YELLOW);
 		printf("%s(", sc->name);
-		if ((i = args_print(sc, regs, fd)) < 0)
+		if ((ret = args_print(sc, regs, fd)) < 0)
 			return (-1);
 		close(fd);
-		printf("%s) ", i ? "\b\b" : "");
+		printf("%s) ", ret ? "\b\b" : "");
 		unset_col();
+		if (sc->ret == AT_X)
+			sysc_ret_print(sc, NULL);
 	} else
 		printf("syscall(%d) ", (int)((uint64_t *)regs)[8]);
 	return (0);
 }
 
 void		sysc_ret_print(const sysc_t *sc, void *regs) {
-	uint64_t			i;
-
 	set_col(GREEN);
 	if (sc) {
 		switch (sc->ret) {
+			case AT_X:
+				printf("= ?\n");
+				break;
 			case AT_U:
 				printf("= %lu\n", *((uint64_t *)regs));
 				break;

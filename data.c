@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 19:24:23 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:47:42 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/25 17:47:47 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,8 +163,8 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 	},{	.name = "close",
 		.id = { 3, 6, 57, 6 },
-		.args = { AT__ },
-		.ret = AT__,
+		.args = { AT_I },
+		.ret = AT_I,
 	},{	.name = "connect",
 		.id = { 42, 283, 203, 362 },
 		.args = { AT__ },
@@ -247,8 +247,8 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 	},{	.name = "exit_group",
 		.id = { 231, 248, 94, 252 },
-		.args = { AT__ },
-		.ret = AT__,
+		.args = { AT_I, 0 },
+		.ret = AT_X,
 	},{	.name = "faccessat",
 		.id = { 269, 334, 48, 307 },
 		.args = { AT__ },
@@ -744,7 +744,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 	},{	.name = "mmap",
 		.id = { 9, -1, 222, 90 },
 		.args = { AT__ },
-		.ret = AT__,
+		.ret = AT_P,
 	},{	.name = "mmap2",
 		.id = { -1, 192, -1, 192 },
 		.args = { AT__ },
@@ -827,7 +827,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 	},{	.name = "munmap",
 		.id = { 11, 91, 215, 91 },
-		.args = { AT__ },
+		.args = { AT_P, AT_U, 0 },
 		.ret = AT__,
 	},{	.name = "name_to_handle_at",
 		.id = { 303, 370, 264, 341 },
@@ -1007,8 +1007,8 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 	},{	.name = "read",
 		.id = { 0, 3, 63, 3 },
-		.args = { AT__ },
-		.ret = AT__,
+		.args = { AT_I, AT_M, AT_U, 0 },
+		.ret = AT_I,
 	},{	.name = "readahead",
 		.id = { 187, 225, 213, 225 },
 		.args = { AT__ },
@@ -1219,7 +1219,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 	},{	.name = "set_robust_list",
 		.id = { 273, 338, 99, 311 },
-		.args = { AT__ },
+		.args = { AT_P, AT_U, 0 },
 		.ret = AT__,
 	},{	.name = "set_thread_area",
 		.id = { 205, -1, -1, 243 },
@@ -1647,7 +1647,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 	},{	.name = "wait4",
 		.id = { 61, 114, 260, 114 },
-		.args = { AT__ },
+		.args = { AT_I, AT_P, AT_I, AT_P, 0 },
 		.ret = AT__,
 	},{	.name = "waitid",
 		.id = { 247, 280, 95, 284 },
@@ -1659,7 +1659,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 	},{	.name = "write",
 		.id = { 1, 4, 64, 4 },
-		.args = { AT__ },
+		.args = { AT_I, AT_S, AT_U, 0 },
 		.ret = AT__,
 	},{	.name = "writev",
 		.id = { 20, 146, 66, 146 },

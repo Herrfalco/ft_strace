@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:39:38 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:18:05 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/25 18:00:06 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ const at_print_t	AT_PRINT[ARG_TYP_NB] = {
 	at_s_print,
 	at_l_print,
 	at_c_print,
+	at___print,
+	at_m_print,
 };
 
 const col_t			AT_COL[ARG_TYP_NB] = {
@@ -32,6 +34,8 @@ const col_t			AT_COL[ARG_TYP_NB] = {
 	PURPLE,
 	CYAN,
 	CYAN,
+	WHITE,
+	PURPLE,
 };
 
 int				at___print(void *reg, int fd) {
@@ -74,26 +78,9 @@ int				at_o_print(void *reg, int fd) {
 	return (0);
 }
 
-static char		*rep_esc(char *str) {
-	static char		new_str[BUFF_SZ * 2];
+static int		print_str(void *reg, int fd, uint8_t dump) {
+	uint64_t		i, len;
 	const char		esc_c[] = "abtnvfr";
-	uint64_t		i, j;
-
-	bzero(new_str, BUFF_SZ * 2);
-	for (i = 0, j = 0; i < BUFF_SZ && str[i]; ++i) {
-		if (str[i] > 6 && str[i] < 14) {
-			new_str[j++] = '\\';
-			new_str[j++] = esc_c[str[i] - 7];
-			continue;
-		} else if (str[i] < ' ' || str[i] > '~')
-			break;
-		new_str[j++] = str[i];
-	}
-	return (new_str);
-}
-
-int				at_s_print(void *reg, int fd) {
-	uint64_t		i;
 	char			str[BUFF_SZ + 2];
 
 	if (lseek(fd, *((uint64_t *)reg), SEEK_SET) < 0)
@@ -101,12 +88,36 @@ int				at_s_print(void *reg, int fd) {
 	for (i = 0; i < BUFF_SZ + 2; ++i) {
 		if (read(fd, str + i, 1) != 1)
 			return (-1);
-		if (!str[i])
+		if (!(dump || str[i]))
 			break;
 	}
-	printf("\"%.*s\"%s", BUFF_SZ, rep_esc(str),
-			i > BUFF_SZ ? "..." : "");
+	len = i;
+	printf("\"");
+	for (i = 0; i < BUFF_SZ
+			&& (str[i] || dump); ++i) {
+		if (str[i] > 6 && str[i] < 14) {
+			printf("\\%c", esc_c[str[i] - 7]);
+		} else if (str[i] >= ' ' && str[i] <= '~')
+			printf("%c", str[i]);
+		else if (dump) {
+			printf("\\%x", str[i]);
+			/*
+			printf("\\");
+			oct_rec(str[i]);
+			*/
+		} else
+			break;
+	}
+	printf("\"%s", len > BUFF_SZ ? "..." : "");
 	return (0);
+}
+
+int				at_s_print(void *reg, int fd) {
+	return (print_str(reg, fd, 0));
+}
+
+int				at_m_print(void *reg, int fd) {
+	return (print_str(reg, fd, 1));
 }
 
 int				at_l_print(void *reg, int fd) {

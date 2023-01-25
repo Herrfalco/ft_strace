@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:44:10 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/25 17:07:28 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,5 @@ int			main(int argc, char **argv, char **env) {
 		}
 		ptrace(PTRACE_SYSCALL, pid, 0, 0);
 	} while (status);
-	printf("\n");
 	return (0);
 }
