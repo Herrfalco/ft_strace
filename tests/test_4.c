@@ -1,22 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syscall.h                                          :+:      :+:    :+:   */
+/*   test_4.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:42:47 by fcadet           ###   ########.fr       */
+/*   Created: 2023/01/24 16:19:03 by fcadet            #+#    #+#             */
+/*   Updated: 2023/01/24 16:20:12 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SYSCALL_H
-#define SYSCALL_H
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
 
-#include "data.h"
+void null_handler(int sig) {
+	(void)sig;
+	return;
+}
 
-const sysc_t	*sysc_get(void *regs);
-int				sysc_print(const sysc_t *sc, void *regs, int pid);
-void			sysc_ret_print(const sysc_t *sc, void *regs);
+int main(void) {
+	sigset_t set;
 
-#endif
+	sigemptyset(&set);
+	sigaddset(&set, SIGCHLD);
+	sigaddset(&set, 33);
+	sigaddset(&set, 35);
+	sigaddset(&set, 63);
+	sigaddset(&set, 64);
+	sigprocmask(SIG_BLOCK, &set, NULL);
+	signal(SIGWINCH, null_handler);
+	raise(SIGWINCH);
+	return 0;
+}

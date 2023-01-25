@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syscall.h                                          :+:      :+:    :+:   */
+/*   arch.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:42:47 by fcadet           ###   ########.fr       */
+/*   Created: 2023/01/24 17:43:49 by fcadet            #+#    #+#             */
+/*   Updated: 2023/01/24 19:26:53 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SYSCALL_H
-#define SYSCALL_H
+#ifndef ARCH_H
+#define ARCH_H
 
-#include "data.h"
+#define ARCH_NB		4
 
-const sysc_t	*sysc_get(void *regs);
-int				sysc_print(const sysc_t *sc, void *regs, int pid);
-void			sysc_ret_print(const sysc_t *sc, void *regs);
+typedef enum		arch_e {
+	ARCH_AMD_64,
+	ARCH_ARM_32,
+	ARCH_ARM_64,
+	ARCH_AMD_32,
+}					arch_t;
 
-#endif
+void				arch_set(arch_t arch);
+arch_t				arch_get(void);
+
+#endif // ARCH_H

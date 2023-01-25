@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syscall.h                                          :+:      :+:    :+:   */
+/*   test_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:42:47 by fcadet           ###   ########.fr       */
+/*   Created: 2023/01/24 16:18:13 by fcadet            #+#    #+#             */
+/*   Updated: 2023/01/24 16:18:27 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SYSCALL_H
-#define SYSCALL_H
+#include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
 
-#include "data.h"
+void interrupt() {
+	write(2, "xyzzy\n", 6);
+}
 
-const sysc_t	*sysc_get(void *regs);
-int				sysc_print(const sysc_t *sc, void *regs, int pid);
-void			sysc_ret_print(const sysc_t *sc, void *regs);
+int main(void) {
+	char buf[1024];
 
-#endif
+	signal(SIGINT, interrupt);
+	read(0, buf, 1024);
+	write(2, "qwerty\n", 7);
+	return 0;
+}

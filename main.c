@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/20 20:02:53 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/25 16:44:10 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef enum		sys_state_e {
 }					sys_state_t;
 
 int			error(int ret) {
-	perror("Error: ");
+	perror("Error");
 	return (ret);
 }
 
@@ -39,6 +39,7 @@ int			main(int argc, char **argv, char **env) {
 	int							pid, status;
 	uint8_t						buff[1024];
 	sys_state_t					sys_state = S_CALL;
+	const sysc_t				*sysc = NULL;
 	struct iovec				iov = {
 		iov.iov_base = buff,
 		iov.iov_len = 1024,
@@ -46,13 +47,6 @@ int			main(int argc, char **argv, char **env) {
 
 	(void)argc;
 	arch_set(ARCH_ARM_64);
-	/*
-	printf("%d\n", SIGTRAP);
-	printf("%d\n", SIGSTOP);
-	printf("%d\n", SIGINT);
-	printf("%d\n", SIGQUIT);
-	printf("%d\n", SIGPIPE);
-	*/
 	if ((pid = fork()) < 0)
 		return (error(1));
 
@@ -69,10 +63,12 @@ int			main(int argc, char **argv, char **env) {
 		if (WIFSTOPPED(status)) {
 			if (WSTOPSIG(status) == SIGTRAP) {
 				ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov);
-				if (sys_state == S_CALL)
-					sysc_print(iov.iov_base, pid);
-				else
-					printf("= %ld\n", *((uint64_t *)iov.iov_base));
+				if (sys_state == S_CALL) {
+					sysc = sysc_get(iov.iov_base);
+					if (sysc_print(sysc, iov.iov_base, pid) < 0)
+						return (error(4));
+				} else
+					sysc_ret_print(sysc, iov.iov_base);
 				sys_state ^= S_RET;
 			}
 		}

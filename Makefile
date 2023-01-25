@@ -1,5 +1,9 @@
 NAME	=	ft_strace
-SRCS	=	main.c \
+SRCS	=	arch.c \
+		args.c \
+		col.c \
+		data.c \
+		main.c \
 		syscall.c
 OBJS	=	$(SRCS:.c=.o)
 CC	=	gcc

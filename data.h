@@ -1,22 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syscall.h                                          :+:      :+:    :+:   */
+/*   data.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:42:47 by fcadet           ###   ########.fr       */
+/*   Created: 2023/01/24 17:10:27 by fcadet            #+#    #+#             */
+/*   Updated: 2023/01/24 19:35:56 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SYSCALL_H
-#define SYSCALL_H
+#ifndef DATA_H
+#define DATA_H
 
-#include "data.h"
+#define ARG_NB		6
+#define SYSC_NB		413
 
-const sysc_t	*sysc_get(void *regs);
-int				sysc_print(const sysc_t *sc, void *regs, int pid);
-void			sysc_ret_print(const sysc_t *sc, void *regs);
+#include "args.h"
+#include "arch.h"
 
-#endif
+typedef struct		sysc_s {
+	char			*name;
+	int				id[ARCH_NB];		
+	arg_typ_t		args[ARG_NB];
+	arg_typ_t		ret;
+}					sysc_t;
+
+const sysc_t		SYSC[SYSC_NB];
+
+#endif // DATA_H

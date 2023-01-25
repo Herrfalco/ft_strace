@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syscall.h                                          :+:      :+:    :+:   */
+/*   arch.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:42:47 by fcadet           ###   ########.fr       */
+/*   Created: 2023/01/24 17:43:27 by fcadet            #+#    #+#             */
+/*   Updated: 2023/01/24 17:45:23 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SYSCALL_H
-#define SYSCALL_H
+#include "arch.h"
 
-#include "data.h"
+static arch_t		g_arch = 0;
 
-const sysc_t	*sysc_get(void *regs);
-int				sysc_print(const sysc_t *sc, void *regs, int pid);
-void			sysc_ret_print(const sysc_t *sc, void *regs);
+void				arch_set(arch_t arch) {
+	g_arch = arch;
+}
 
-#endif
+arch_t				arch_get(void) {
+	return (g_arch);
+};

@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syscall.h                                          :+:      :+:    :+:   */
+/*   col.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:42:47 by fcadet           ###   ########.fr       */
+/*   Created: 2023/01/24 17:42:02 by fcadet            #+#    #+#             */
+/*   Updated: 2023/01/25 14:47:48 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SYSCALL_H
-#define SYSCALL_H
+#include "col.h"
 
-#include "data.h"
+static col_stack_t		g_col_stack = {
+	.dat = { WHITE },
+	.sz = 1,
+};
 
-const sysc_t	*sysc_get(void *regs);
-int				sysc_print(const sysc_t *sc, void *regs, int pid);
-void			sysc_ret_print(const sysc_t *sc, void *regs);
+void	set_col(const col_t color) {
+	strncpy(g_col_stack.dat[g_col_stack.sz++], color, COLOR_SZ);
+	printf("%s", color);
+}
 
-#endif
+void	unset_col(void) {
+	printf("%s", g_col_stack.dat[--g_col_stack.sz - 1]);
+}
