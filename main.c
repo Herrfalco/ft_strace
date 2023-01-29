@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/29 10:53:59 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/29 12:33:53 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,20 @@ static int		error(int ret) {
 	return (ret);
 }
 
+static void		wait_stop(pid_t pid, int *status) {
+	sigset_t		set;
+
+	sigemptyset(&set);
+	sigprocmask(SIG_SETMASK, &set, NULL);
+	waitpid(pid, status, 0);
+	sigaddset(&set, SIGHUP);
+	sigaddset(&set, SIGINT);
+	sigaddset(&set, SIGQUIT);
+	sigaddset(&set, SIGPIPE);
+	sigaddset(&set, SIGTERM);
+	sigprocmask(SIG_BLOCK, &set, NULL);
+}
+
 int			main(int argc, char **argv, char **env) {
 	int							pid, status;
 	sys_state_t					sys_state = S_CALL;
@@ -49,8 +63,14 @@ int			main(int argc, char **argv, char **env) {
 	if (ptrace(PTRACE_SEIZE, pid, 0, 0) < 0)
 		return (error(3));
 	do {
-		waitpid(pid, &status, 0);
+		wait_stop(pid, &status);
 		if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP) {
+			if (WIFEXITED(status)) {
+				sysc_ret_print(sc, regs);
+				printf("+++ exited with %d +++\n",
+						WEXITSTATUS(status));
+				return (0);
+			}
 			ptrace(PTRACE_SYSCALL, pid, 0, 0);
 			continue;
 		}
