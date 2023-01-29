@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/25 16:42:47 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/27 19:14:24 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,11 @@
 
 #include "data.h"
 
+#define REGS_BUFF_SZ		1024
+
 const sysc_t	*sysc_get(void *regs);
-int				sysc_print(const sysc_t *sc, void *regs, int pid);
+void			sysc_name_print(const sysc_t *sc);
+int				sysc_args_print(const sysc_t *sc, void *regs, pid_t pid);
 void			sysc_ret_print(const sysc_t *sc, void *regs);
 
 #endif
