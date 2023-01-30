@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:26 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/27 19:14:24 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/30 09:16:03 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define SYSCALL_H
 
 #include "data.h"
+#include "error.h"
 
 #define REGS_BUFF_SZ		1024
 

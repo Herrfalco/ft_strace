@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/29 12:33:53 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/30 10:18:14 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ int			main(int argc, char **argv, char **env) {
 	struct iovec				iov = { 
 		.iov_base = regs, .iov_len = REGS_BUFF_SZ
 	};
-(void)argc; arch_set(ARCH_ARM_64);
+
+	printf("%d\n", ENOENT);
+	(void)argc;
+	arch_set(ARCH_ARM_64);
 	if ((pid = fork()) < 0)
 		return (error(1));
 	if (!pid) {
@@ -96,6 +99,6 @@ int			main(int argc, char **argv, char **env) {
 		sys_state ^= S_RET;
 		ptrace(PTRACE_SYSCALL, pid, 0, 0);
 	} while (status);
-	sysc_ret_print(sc, iov.iov_base);
+	sysc_ret_print(sc, regs);
 	return (0);
 }

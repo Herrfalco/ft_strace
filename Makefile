@@ -4,7 +4,8 @@ SRCS	=	arch.c \
 		col.c \
 		data.c \
 		main.c \
-		syscall.c
+		syscall.c \
+		error.c
 OBJS	=	$(SRCS:.c=.o)
 CC	=	gcc
 CFLAGS	=	-Wall -Wall -Wextra

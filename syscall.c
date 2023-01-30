@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:33 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/27 19:28:45 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/30 10:22:06 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ int			sysc_args_print(const sysc_t *sc, void *regs, pid_t pid) {
 }
 
 void		sysc_ret_print(const sysc_t *sc, void *regs) {
+	uint64_t		ret = *((uint64_t *)regs);
+
 	set_col(GREEN);
 	if (sc) {
 		switch (sc->ret) {
@@ -80,18 +82,23 @@ void		sysc_ret_print(const sysc_t *sc, void *regs) {
 				printf(" = ?\n");
 				break;
 			case AT_U:
-				printf(" = %lu\n", *((uint64_t *)regs));
+				printf(" = %lu\n", ret);
 				break;
 			case AT_P:
-				if (*((uint64_t *)regs))
-					printf(" = 0x%lx\n", *((uint64_t *)regs));
-				else
+				if (ret >= FST_ERR_PTR)
+					error_print(ret);
+				else if (!ret)
 					printf(" = NULL\n");
+				else
+					printf(" = 0x%lx\n", ret);
 				break;
 			default:
-				printf(" = %ld\n", *((uint64_t *)regs));
+				if ((int64_t)ret < 0)
+					error_print(ret);
+				else
+					printf(" = %ld\n", ret);
 		}
 	} else
-		printf(" = %ld\n", *((uint64_t *)regs));
+		printf(" = %ld\n", ret);
 	unset_col();
 }
