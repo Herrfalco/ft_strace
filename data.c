@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 19:24:23 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/31 12:41:06 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/01/31 13:06:00 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "clock_nanosleep",
 		.id = { 230, 265, 115, 267 },
-		.args = { 0 },
+		.args = { AT_I, AT_I, AT_P, AT_P, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "clock_settime",
