@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 19:24:23 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/31 13:06:00 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/01 23:13:34 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1340,7 +1340,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "restart_syscall",
 		.id = { 219, 0, 128, 0 },
-		.args = { 0 },
+		.args = { AT_R, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "rmdir",

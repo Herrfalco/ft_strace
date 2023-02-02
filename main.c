@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/31 12:42:02 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/01 23:51:46 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int			main(int argc, char **argv, char **env) {
 	uint64_t					sig;
 	sys_state_t					sys_state = S_CALL;
 	uint8_t						regs[REGS_BUFF_SZ], start = 0;
-	const sysc_t				*sc;
+	const sysc_t				*sc, *old_sc = NULL;
 	struct iovec				iov = { 
 		.iov_base = regs, .iov_len = REGS_BUFF_SZ
 	};
@@ -50,8 +50,9 @@ int			main(int argc, char **argv, char **env) {
 		return (error(1));
 	if (!pid) {
 		if (raise(SIGSTOP))
-			exit(error(2));
+			return (1);
 		execvpe(argv[1], argv + 1, env);
+		return (1);
 	}
 	if (ptrace(PTRACE_SEIZE, pid, 0, 0) < 0)
 		return (error(3));
@@ -68,11 +69,13 @@ int			main(int argc, char **argv, char **env) {
 						start = 1;
 					if (start) {
 						sysc_name_print(sc);
-						if (!sc || sc->pstate == S_CALL)
+						if (!sysc_restart(sc, old_sc)
+							&& (!sc || sc->pstate == S_CALL))
 							if (sysc_args_print(sc, regs, pid))
 								return (error(4));
 					}
 				} else if (start) {
+					old_sc = sc;
 					if (sc && sc->pstate == S_RET)
 						if (sysc_args_print(sc, regs, pid))
 							return (error(4));
@@ -82,11 +85,14 @@ int			main(int argc, char **argv, char **env) {
 				}
 				sys_state ^= S_RET;
 				sig = 0;
-			} else if (start) {
+			} else if (start)
 				printf("--- %s ---\n", sig_name(sig));
-			}
 		} else if (start && WIFSIGNALED(status)) {
 			sig = WTERMSIG(status);
+			if (sc && sc->pstate == S_RET) {
+				sysc_args_print(sc, NULL, pid);
+				sysc_ret_print(sc, NULL);
+			}
 			printf("+++ killed by %s %s+++\n",
 				sig_name(sig), sig_is_core(WTERMSIG(status))
 				? "(core dumped) " : "");

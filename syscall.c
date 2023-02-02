@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:33 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/30 10:22:06 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/01 23:51:43 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,33 @@ void		sysc_name_print(const sysc_t *sc) {
 	unset_col();
 }
 
+int			sysc_restart(const sysc_t *sc, const sysc_t *o_sc) {
+	if (!sc || !o_sc || *(sc->args) != AT_R)
+		return (0);
+	set_col(YELLOW);
+	printf("(");
+	set_col(WHITE);
+	printf("<... resuming interrupted %s ...>", o_sc->name);
+	unset_col();
+	printf(")");
+	unset_col();
+	return (1);
+}
+
 int			sysc_args_print(const sysc_t *sc, void *regs, pid_t pid) {
 	int			mem_fd;
 	uint64_t	i, j;
 
 	set_col(sc ? YELLOW : WHITE);
 	printf("(");
+	if (!(regs)) {
+		set_col(WHITE);
+		printf("<unfinished ...>");
+		unset_col();
+		printf(")");
+		unset_col();
+		return (0);
+	}
 	if (!sc) {
 		printf("%ld)", ((uint64_t *)regs)[8]);
 		unset_col();
@@ -73,9 +94,15 @@ int			sysc_args_print(const sysc_t *sc, void *regs, pid_t pid) {
 }
 
 void		sysc_ret_print(const sysc_t *sc, void *regs) {
-	uint64_t		ret = *((uint64_t *)regs);
+	uint64_t		ret;
 
 	set_col(GREEN);
+	if (!regs) {
+		printf(" = ?\n");
+		unset_col();
+		return;
+	}
+	ret = *((uint64_t *)regs);
 	if (sc) {
 		switch (sc->ret) {
 			case AT_X:

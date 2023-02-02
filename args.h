@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:55:52 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/30 09:15:54 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/01 23:13:12 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef enum		arg_typ_e {
 	AT_C,
 	AT_X,
 	AT_E,
+	AT_R,
 }					arg_typ_t;
 
 typedef int			(*at_print_t)(void *, int);
