@@ -23,7 +23,7 @@ const sysc_t	*sysc_get(void *regs) {
 	uint64_t		i;
 
 	for (i = 0; i < SYSC_NB; ++i) {
-		if ((int)((uint64_t *)regs)[8] 
+		if ((int)arch_get_reg(regs, REG_SYSC)
 				== SYSC[i].id[arch_get()])
 			return (&SYSC[i]);
 	}
@@ -64,7 +64,7 @@ int			sysc_args_print(const sysc_t *sc, void *regs, pid_t pid) {
 		return (0);
 	}
 	if (!sc) {
-		printf("%ld)", ((uint64_t *)regs)[8]);
+		printf("%ld)", arch_get_reg(regs, REG_SYSC));
 		unset_col();
 		return (0);
 	}
@@ -74,8 +74,9 @@ int			sysc_args_print(const sysc_t *sc, void *regs, pid_t pid) {
 		for (j = 0; j < ARG_TYP_NB; ++j) {
 			if (sc->args[i] == j) {
 				set_col(AT_COL[j]);
-				if (AT_PRINT[j](((uint64_t *)regs) + i, mem_fd)
-						< 0) {
+				if (AT_PRINT[j](
+					arch_get_reg(regs, REG_ARGS + i),
+					mem_fd) < 0) {
 					unset_col();
 					unset_col();
 					close(mem_fd);
@@ -102,7 +103,7 @@ void		sysc_ret_print(const sysc_t *sc, void *regs) {
 		unset_col();
 		return;
 	}
-	ret = *((uint64_t *)regs);
+	ret = arch_get_reg(regs, REG_RET);
 	if (sc) {
 		switch (sc->ret) {
 			case AT_X:

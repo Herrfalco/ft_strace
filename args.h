@@ -32,18 +32,18 @@ typedef enum		arg_typ_e {
 	AT_R,
 }					arg_typ_t;
 
-typedef int			(*at_print_t)(void *, int);
+typedef int			(*at_print_t)(uint64_t, int);
 
-const at_print_t	AT_PRINT[ARG_TYP_NB];
-const col_t			AT_COL[ARG_TYP_NB];
+extern const at_print_t		AT_PRINT[ARG_TYP_NB];
+extern const col_t			AT_COL[ARG_TYP_NB];
 
-int				at___print(void *reg, int mem_fd);
-int				at_u_print(void *reg, int mem_fd);
-int				at_i_print(void *reg, int mem_fd);
-int				at_p_print(void *reg, int mem_fd);
-int				at_o_print(void *reg, int mem_fd);
-int				at_s_print(void *reg, int mem_fd);
-int				at_l_print(void *reg, int mem_fd);
-int				at_c_print(void *reg, int mem_fd);
+int				at___print(uint64_t reg_val, int mem_fd);
+int				at_u_print(uint64_t reg_val, int mem_fd);
+int				at_i_print(uint64_t reg_val, int mem_fd);
+int				at_p_print(uint64_t reg_val, int mem_fd);
+int				at_o_print(uint64_t reg_val, int mem_fd);
+int				at_s_print(uint64_t reg_val, int mem_fd);
+int				at_l_print(uint64_t reg_val, int mem_fd);
+int				at_c_print(uint64_t reg_val, int mem_fd);
 
 #endif // ARGS_H

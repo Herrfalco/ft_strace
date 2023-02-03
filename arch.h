@@ -13,7 +13,14 @@
 #ifndef ARCH_H
 #define ARCH_H
 
+#include "incs.h"
+
 #define ARCH_NB		4
+
+#define REG_RET		0
+#define REG_SYSC	1
+#define REG_ARGS	2
+#define REG_NB		8
 
 typedef enum		arch_e {
 	ARCH_AMD_64,
@@ -24,5 +31,6 @@ typedef enum		arch_e {
 
 void				arch_set(arch_t arch);
 arch_t				arch_get(void);
+uint64_t			arch_get_reg(void *regs, uint8_t idx);
 
 #endif // ARCH_H

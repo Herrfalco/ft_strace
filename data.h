@@ -32,6 +32,6 @@ typedef struct		sysc_s {
 	sys_state_t		pstate;
 }					sysc_t;
 
-const sysc_t		SYSC[SYSC_NB];
+extern const sysc_t		SYSC[SYSC_NB];
 
 #endif // DATA_H

@@ -45,7 +45,8 @@ int			main(int argc, char **argv, char **env) {
 	};
 
 	(void)argc;
-	arch_set(ARCH_ARM_64);
+//	arch_set(ARCH_ARM_64);
+	arch_set(ARCH_AMD_64);
 	if ((pid = fork()) < 0)
 		return (error(1));
 	if (!pid) {
@@ -65,7 +66,8 @@ int			main(int argc, char **argv, char **env) {
 					ptrace(PTRACE_GETREGSET, pid,
 						NT_PRSTATUS, &iov);
 					sc = sysc_get(regs);
-					if (!start && !strcmp(sc->name, "execve"))
+					if (!start && (!sc
+						|| !strcmp(sc->name, "execve")))
 						start = 1;
 					if (start) {
 						sysc_name_print(sc);

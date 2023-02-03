@@ -13,6 +13,11 @@
 #ifndef	SIG_H
 #define SIG_H
 
+#define SIG_NB			34
+#define CORE_SIG_NB		11
+
+#include "incs.h"
+
 int				sig_is_core(uint64_t sig);
 const char		*sig_name(uint64_t sig);
 

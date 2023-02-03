@@ -10,11 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdint.h>
-#include <signal.h>
-
-#define SIG_NB			34
-#define CORE_SIG_NB		11
+#include "sig.h"
 
 const uint64_t		CORE_SIGS[] = {
 	SIGABRT, SIGBUS, SIGFPE, SIGILL, SIGIOT, SIGQUIT,
