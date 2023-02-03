@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:33 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/01 23:51:43 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/03 17:24:47 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,12 @@ int			sysc_args_print(const sysc_t *sc, void *regs, pid_t pid) {
 		for (j = 0; j < ARG_TYP_NB; ++j) {
 			if (sc->args[i] == j) {
 				set_col(AT_COL[j]);
+				if (sc->pstate == S_RET && i < ARG_NB - 1)
+					args_set_rlim(arch_get_reg(regs,
+						REG_ARGS + i + 1));
 				if (AT_PRINT[j](
-					arch_get_reg(regs, REG_ARGS + i),
-					mem_fd) < 0) {
+						arch_get_reg(regs, REG_ARGS + i),
+						mem_fd) < 0) {
 					unset_col();
 					unset_col();
 					close(mem_fd);

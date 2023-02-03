@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 19:24:23 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/01 23:13:34 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/03 18:00:54 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "access",
 		.id = { 21, 33, -1, 33 },
-		.args = { 0 },
+		.args = { AT_S, AT_I, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "acct",
@@ -95,7 +95,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "arch_prctl",
 		.id = { 158, -1, -1, 384 },
-		.args = { 0 },
+		.args = { AT_H, AT_P, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "arm_fadvise64_64",
@@ -595,9 +595,9 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "getrandom",
 		.id = { 318, 384, 278, 355 },
-		.args = { 0 },
+		.args = { AT_B, AT_U, AT_U, 0 },
 		.ret = AT__,
-		.pstate = S_CALL,
+		.pstate = S_RET,
 	},{	.name = "getresgid",
 		.id = { 120, 171, 150, 171 },
 		.args = { 0 },
@@ -925,7 +925,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "mmap",
 		.id = { 9, -1, 222, 90 },
-		.args = { AT_P, AT_I, AT_I, AT_I, AT_I, AT_P },
+		.args = { AT_P, AT_I, AT_I, AT_I, AT_I, AT_H },
 		.ret = AT_P,
 		.pstate = S_CALL,
 	},{	.name = "mmap2",
@@ -1045,7 +1045,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "newfstatat",
 		.id = { 262, -1, 79, -1 },
-		.args = { 0 },
+		.args = { AT_I, AT_S, AT_P, AT_I, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "nfsservctl",
@@ -1175,9 +1175,9 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "pread64",
 		.id = { 17, 180, 67, 180 },
-		.args = { 0 },
+		.args = { AT_I, AT_S, AT_U, AT_U, 0 },
 		.ret = AT__,
-		.pstate = S_CALL,
+		.pstate = S_RET,
 	},{	.name = "preadv",
 		.id = { 295, 361, 69, 333 },
 		.args = { 0 },
@@ -1370,7 +1370,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "rt_sigreturn",
 		.id = { 15, 173, 139, 173 },
-		.args = { 0 },
+		.args = { AT_P, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "rt_sigsuspend",
@@ -2076,6 +2076,11 @@ const sysc_t			SYSC[SYSC_NB] = {
 	},{	.name = "writev",
 		.id = { 20, 146, 66, 146 },
 		.args = { 0 },
+		.ret = AT__,
+		.pstate = S_CALL,
+	},{	.name = "rseq",
+		.id = { 334, -1, -1, -1 },
+		.args = { AT_P, AT_H, AT_I, AT_H, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	}

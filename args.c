@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:39:38 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/30 08:29:54 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/03 17:59:13 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,50 +16,68 @@ const at_print_t	AT_PRINT[ARG_TYP_NB] = {
 	at___print,
 	at_u_print,
 	at_i_print,
+	at_h_print,
 	at_p_print,
 	at_o_print,
 	at_s_print,
+	at_b_print,
 	at_l_print,
 	at_c_print,
-	at___print,
 };
 
 const col_t			AT_COL[ARG_TYP_NB] = {
 	WHITE,
 	BLUE,
 	BLUE,
+	BLUE,
 	RED,
 	BLUE,
 	PURPLE,
+	PURPLE,
 	CYAN,
 	CYAN,
-	WHITE,
 };
 
-int				at___print(uint64_t regval, int mem_fd) {
-	(void)regval;
+static read_lim_t	g_rlim = { 0 };
+
+void			args_set_rlim(uint64_t val) {
+	g_rlim.val = val;
+	g_rlim.set = 1;
+}
+
+int				at___print(uint64_t reg_val, int mem_fd) {
+	(void)reg_val;
 	(void)mem_fd;
 	return (0);
 }
 
-int				at_u_print(uint64_t regval, int mem_fd) {
+int				at_u_print(uint64_t reg_val, int mem_fd) {
 	(void)mem_fd;
-	printf("%lu", regval);
+	printf("%lu", reg_val);
 	return (0);
 }
 
-int				at_i_print(uint64_t regval, int mem_fd) {
+int				at_i_print(uint64_t reg_val, int mem_fd) {
 	(void)mem_fd;
-	printf("%ld", regval);
+	printf("%d", (int32_t)reg_val);
 	return (0);
 }
 
-int				at_p_print(uint64_t regval, int mem_fd) {
+int				at_h_print(uint64_t reg_val, int mem_fd) {
 	(void)mem_fd;
-	if (!regval)
+	if (!reg_val)
+		printf("0");
+	else
+		printf("0x%lx", reg_val);
+	return (0);
+}
+
+int				at_p_print(uint64_t reg_val, int mem_fd) {
+	(void)mem_fd;
+	if (!reg_val)
 		printf("NULL");
 	else
-		printf("0x%lx", regval);
+		printf("0x%lx", reg_val);
 	return (0);
 }
 
@@ -69,35 +87,38 @@ static void		oct_rec(uint64_t val) {
 	printf("%ld", val % 8);
 }
 
-int				at_o_print(uint64_t regval, int mem_fd) {
+int				at_o_print(uint64_t reg_val, int mem_fd) {
 	(void)mem_fd;
 	printf("0");
-	oct_rec(regval);
+	oct_rec(reg_val);
 	return (0);
 }
 
-int				at_s_print(uint64_t regval, int mem_fd) {
-	uint64_t		i, len;
-	uint8_t			dump;
-	const char		esc_c[] = "abtnvfr";
-	char			str[BUFF_SZ + 2];
+static int		str_print(uint64_t reg_val, int mem_fd, uint8_t bin) {
+	uint64_t			i, len;
+	uint8_t				dump = 1;
+	const char			esc_c[] = "abtnvfr";
+	unsigned char		str[BUFF_SZ + 2];
 
-	if (lseek(mem_fd, regval, SEEK_SET) < 0)
+	if (lseek(mem_fd, reg_val, SEEK_SET) < 0)
 		return (-1);
-	for (i = 0; i < BUFF_SZ + 2; ++i) {
+	for (i = 0; (!g_rlim.set || i < g_rlim.val)
+			&& i < BUFF_SZ + 2; ++i) {
 		if (read(mem_fd, str + i, 1) != 1)
 			return (-1);
-		if (!i)
-			dump = !(str[i] > 6 && str[i] < 14)
+		if (!i && !bin)
+			dump = str[i] && !(str[i] > 6 && str[i] < 14)
 				&& !(str[i] >= ' ' && str[i] <= '~');
 		if (!(dump || str[i]))
 			break;
 	}
 	len = i;
 	printf("\"");
-	for (i = 0; i < BUFF_SZ
-			&& (str[i] || dump); ++i) {
-		if (str[i] > 6 && str[i] < 14) {
+	for (i = 0; (!g_rlim.set || i < g_rlim.val)
+			&& i < BUFF_SZ && (str[i] || dump); ++i) {
+		if (bin) {
+			printf("\\x%02x", str[i]);
+		} else if (str[i] > 6 && str[i] < 14) {
 			printf("\\%c", esc_c[str[i] - 7]);
 		} else if (str[i] >= ' ' && str[i] <= '~')
 			printf("%c", str[i]);
@@ -107,15 +128,24 @@ int				at_s_print(uint64_t regval, int mem_fd) {
 		} else
 			break;
 	}
+	g_rlim.set = 0;
 	printf("\"%s", len > BUFF_SZ ? "..." : "");
 	return (0);
 }
 
-int				at_l_print(uint64_t regval, int mem_fd) {
+int				at_b_print(uint64_t reg_val, int mem_fd) {
+	return (str_print(reg_val, mem_fd, 1));
+}
+
+int				at_s_print(uint64_t reg_val, int mem_fd) {
+	return (str_print(reg_val, mem_fd, 0));
+}
+
+int				at_l_print(uint64_t reg_val, int mem_fd) {
 	uint64_t		i;
 	void			*offs[BUFF_SZ + 2];
 
-	if (lseek(mem_fd, regval, SEEK_SET) < 0)
+	if (lseek(mem_fd, reg_val, SEEK_SET) < 0)
 		return (-1);
 	for (i = 0; i < BUFF_SZ + 2; ++i) {
 		if (read(mem_fd, offs + i, sizeof(uint64_t))
@@ -134,11 +164,11 @@ int				at_l_print(uint64_t regval, int mem_fd) {
 	return (0);
 }
 
-int				at_c_print(uint64_t regval, int mem_fd) {
+int				at_c_print(uint64_t reg_val, int mem_fd) {
 	uint64_t		ptr, i;
 
-	at_p_print(regval, mem_fd);
-	if (lseek(mem_fd, regval, SEEK_SET) < 0)
+	at_p_print(reg_val, mem_fd);
+	if (lseek(mem_fd, reg_val, SEEK_SET) < 0)
 		return (-1);
 	for (i = 0; i < MAX_LC; ++i) {
 		if (read(mem_fd, &ptr, sizeof(uint64_t))
