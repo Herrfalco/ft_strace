@@ -6,19 +6,11 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/01 23:51:46 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/08 09:51:36 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define		_GNU_SOURCE
-
-#include "syscall.h"
-#include "sig.h"
-
-static int		error(int ret) {
-	perror("Error");
-	return (ret);
-}
+#include "main.h"
 
 static void		wait_stop(pid_t pid, int *status) {
 	sigset_t		set;
@@ -34,79 +26,104 @@ static void		wait_stop(pid_t pid, int *status) {
 	sigprocmask(SIG_BLOCK, &set, NULL);
 }
 
-int			main(int argc, char **argv, char **env) {
-	int							pid, status;
-	uint64_t					sig;
-	sys_state_t					sys_state = S_CALL;
-	uint8_t						regs[REGS_BUFF_SZ], start = 0;
-	const sysc_t				*sc, *old_sc = NULL;
+int			handle_stop(main_dat_t *dat) {
+	uint8_t						regs[REGS_BUFF_SZ];
 	struct iovec				iov = { 
 		.iov_base = regs, .iov_len = REGS_BUFF_SZ
 	};
 
-	(void)argc;
-//	arch_set(ARCH_ARM_64);
-	arch_set(ARCH_AMD_64);
-	if ((pid = fork()) < 0)
-		return (error(1));
-	if (!pid) {
-		if (raise(SIGSTOP))
-			return (1);
-		execvpe(argv[1], argv + 1, env);
-		return (1);
-	}
-	if (ptrace(PTRACE_SEIZE, pid, 0, 0) < 0)
-		return (error(3));
-	do {
-		sig = 0;
-		wait_stop(pid, &status);
-		if (WIFSTOPPED(status)) {
-			if ((sig = WSTOPSIG(status)) == SIGTRAP) {
-				if (sys_state == S_CALL) {
-					ptrace(PTRACE_GETREGSET, pid,
-						NT_PRSTATUS, &iov);
-					sc = sysc_get(regs);
-					if (!start && (!sc
-						|| !strcmp(sc->name, "execve")))
-						start = 1;
-					if (start) {
-						sysc_name_print(sc);
-						if (!sysc_restart(sc, old_sc)
-							&& (!sc || sc->pstate == S_CALL))
-							if (sysc_args_print(sc, regs, pid))
-								return (error(4));
-					}
-				} else if (start) {
-					old_sc = sc;
-					if (sc && sc->pstate == S_RET)
-						if (sysc_args_print(sc, regs, pid))
-							return (error(4));
-					ptrace(PTRACE_GETREGSET, pid,
-							NT_PRSTATUS, &iov);
-					sysc_ret_print(sc, regs);
-				}
-				sys_state ^= S_RET;
-				sig = 0;
-			} else if (start)
-				printf("--- %s ---\n", sig_name(sig));
-		} else if (start && WIFSIGNALED(status)) {
-			sig = WTERMSIG(status);
-			if (sc && sc->pstate == S_RET) {
-				sysc_args_print(sc, NULL, pid);
-				sysc_ret_print(sc, NULL);
+	if ((dat->sig = WSTOPSIG(dat->status)) == SIGTRAP) {
+		if (dat->state == S_CALL) {
+			ptrace(PTRACE_GETREGSET, dat->pid,
+					NT_PRSTATUS, &iov);
+			dat->sc = sysc_get(regs);
+			if (!dat->start && (!dat->sc
+						|| !strcmp(dat->sc->name, "execve")))
+				dat->start = 1;
+			if (dat->start) {
+				sysc_name_print(dat->sc);
+				if (!sysc_restart(dat->sc, dat->old_sc)
+					&& (!dat->sc || dat->sc->pstate == S_CALL))
+					if (sysc_args_print(dat->sc, regs, dat->pid))
+						return (-1);
 			}
-			printf("+++ killed by %s %s+++\n",
-				sig_name(sig), sig_is_core(WTERMSIG(status))
-				? "(core dumped) " : "");
-			kill(getpid(), sig);
-		} else {
-			sysc_ret_print(sc, regs);
-			printf("+++ exited with %d +++\n",
-					WEXITSTATUS(status));
-			return (0);
+		} else if (dat->start) {
+			dat->old_sc = dat->sc;
+			if (dat->sc && dat->sc->pstate == S_RET)
+				if (sysc_args_print(dat->sc, regs, dat->pid))
+					return (-1);
+			ptrace(PTRACE_GETREGSET, dat->pid,
+					NT_PRSTATUS, &iov);
+			sysc_ret_print(dat->sc, regs);
 		}
-		ptrace(PTRACE_SYSCALL, pid, 0, sig);
-	} while (status);
-	sysc_ret_print(sc, regs);
+		dat->state ^= S_RET;
+		dat->sig = 0;
+	} else if (dat->start)
+		printf("--- %s ---\n", sig_name(dat->sig));
+	return (0);
+}
+
+int			handle_kill(main_dat_t *dat) {
+	dat->sig = WTERMSIG(dat->status);
+	if (dat->sc && dat->sc->pstate == S_RET) {
+		if (sysc_args_print(dat->sc, NULL, dat->pid))
+			return (-1);
+		sysc_ret_print(dat->sc, NULL);
+	}
+	printf("+++ killed by %s %s+++\n", sig_name(dat->sig),
+			sig_is_core(WTERMSIG(dat->status))
+			? "(core dumped) " : "");
+	kill(getpid(), dat->sig);
+	return (0);
+}
+
+void		handle_exit(main_dat_t *dat) {
+	sysc_ret_print(dat->sc, NULL);
+	printf("+++ exited with %d +++\n",
+			WEXITSTATUS(dat->status));
+}
+
+int			init_trace(main_dat_t *dat, char **argv, char **env) {
+	if (arch_set(argv[1]) || arch_get() == ARCH_UNK)
+		return (-1);
+	printf("!%d!\n", arch_get());
+	if ((dat->pid = fork()) < 0)
+		return (-1);
+	if (!dat->pid) {
+		if (raise(SIGSTOP))
+			return (-1);
+		execvpe(argv[1], argv + 1, env);
+		return (-1);
+	}
+	if (ptrace(PTRACE_SEIZE, dat->pid, 0, 0) < 0)
+		return (-1);
+	return (0);
+}
+
+int			main(int argc, char **argv, char **env) {
+	main_dat_t					dat = { 
+		.start = 0,
+		.state = S_CALL,
+		.old_sc = NULL,
+	};
+
+	(void)argc;
+	if (init_trace(&dat, argv, env))
+		return (1);
+	while (42) {
+		dat.sig = 0;
+		wait_stop(dat.pid, &dat.status);
+		if (WIFSTOPPED(dat.status)) {
+			if (handle_stop(&dat))
+				return (2);
+		} else if (dat.start && WIFSIGNALED(dat.status)) {
+			if (handle_kill(&dat))
+				return (3);
+		} else {
+			handle_exit(&dat);
+			return (4);
+		}
+		ptrace(PTRACE_SYSCALL, dat.pid, 0, dat.sig);
+	}
 	return (0);
 }

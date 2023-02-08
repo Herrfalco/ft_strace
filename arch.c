@@ -6,13 +6,13 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:43:27 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/24 17:45:23 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/08 09:49:45 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "arch.h"
 
-static arch_t			g_arch = 0;
+static arch_t			g_arch;
 
 static const uint8_t	g_regs_bind[ARCH_NB][REG_NB] = {
 	{ 10, 15, 14, 13, 12, 7, 9, 8 },
@@ -21,8 +21,34 @@ static const uint8_t	g_regs_bind[ARCH_NB][REG_NB] = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0 },
 };
 
-void				arch_set(arch_t arch) {
-	g_arch = arch;
+int					arch_set(const char *path) {
+	int				fd;
+	Elf32_Ehdr		e_hdr;
+
+	if ((fd = open(path, O_RDONLY)) < 0)
+		return (-1);
+	if (read(fd, &e_hdr, sizeof(Elf32_Ehdr))
+			!= sizeof(Elf32_Ehdr)) {
+		close(fd);
+		return (-1);
+	}
+	switch (e_hdr.e_machine) {
+		case EM_386:
+			g_arch = ARCH_AMD_32;
+			break;
+		case EM_X86_64:
+			g_arch = ARCH_AMD_64;
+			break;
+		case EM_ARM:
+			g_arch = ARCH_ARM_32;
+			break;
+		case EM_AARCH64:
+			g_arch = ARCH_ARM_64;
+			break;
+		default:
+			g_arch = ARCH_UNK;
+	}
+	return (0);
 }
 
 arch_t				arch_get(void) {
