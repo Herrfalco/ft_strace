@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:43:49 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 08:09:21 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/09 11:05:49 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "incs.h"
 
-#define ARCH_NB		4
+#define ARCH_NB		3
 
 #define REG_RET		0
 #define REG_SYSC	1
@@ -24,7 +24,6 @@
 
 typedef enum		arch_e {
 	ARCH_AMD_64,
-	ARCH_ARM_32,
 	ARCH_ARM_64,
 	ARCH_AMD_32,
 	ARCH_UNK,
