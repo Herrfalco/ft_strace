@@ -6,18 +6,18 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 11:28:00 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/30 12:25:07 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/09 09:32:50 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sig.h"
 
-const uint64_t		CORE_SIGS[] = {
+static const uint64_t		CORE_SIGS[] = {
 	SIGABRT, SIGBUS, SIGFPE, SIGILL, SIGIOT, SIGQUIT,
 	SIGSEGV, SIGSYS, SIGTRAP, SIGXCPU, SIGXFSZ,
 };
 
-const char			*SIG_STR[] = {
+static const char			*SIG_STR[] = {
 	"SIGABRT", "SIGALRM", "SIGBUS", "SIGCHLD", "SIGCLD",
 	"SIGCONT", "SIGFPE", "SIGHUP", "SIGILL", "SIGINT",
 	"SIGIO", "SIGIOT", "SIGKILL", "SIGPIPE", "SIGPOLL",
@@ -27,7 +27,7 @@ const char			*SIG_STR[] = {
 	"SIGVTALRM", "SIGXCPU", "SIGXFSZ", "SIGWINCH",
 };
 
-const uint64_t		SIGS[] = {
+static const uint64_t		SIGS[] = {
 	SIGABRT, SIGALRM, SIGBUS, SIGCHLD, SIGCLD,
 	SIGCONT, SIGFPE, SIGHUP, SIGILL, SIGINT,
 	SIGIO, SIGIOT, SIGKILL, SIGPIPE, SIGPOLL,

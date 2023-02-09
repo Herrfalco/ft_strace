@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/08 09:51:36 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/09 09:27:17 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int			handle_stop(main_dat_t *dat) {
 					NT_PRSTATUS, &iov);
 			dat->sc = sysc_get(regs);
 			if (!dat->start && (!dat->sc
-						|| !strcmp(dat->sc->name, "execve")))
+					|| !strcmp(dat->sc->name, "execve")))
 				dat->start = 1;
 			if (dat->start) {
 				sysc_name_print(dat->sc);
@@ -86,7 +86,6 @@ void		handle_exit(main_dat_t *dat) {
 int			init_trace(main_dat_t *dat, char **argv, char **env) {
 	if (arch_set(argv[1]) || arch_get() == ARCH_UNK)
 		return (-1);
-	printf("!%d!\n", arch_get());
 	if ((dat->pid = fork()) < 0)
 		return (-1);
 	if (!dat->pid) {

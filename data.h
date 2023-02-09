@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:10:27 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/03 16:31:53 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/09 08:12:29 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #define SYSC_NB		414
 
 #include "args.h"
-#include "arch.h"
 
 typedef enum		sys_state_e {
 	S_CALL,

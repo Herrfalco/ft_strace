@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 08:22:50 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/08 08:31:22 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/09 09:20:55 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 #include "syscall.h"
 #include "sig.h"
+
+#define REGS_BUFF_SZ		1024
 
 typedef struct		main_dat_s {
 	uint8_t			start;
