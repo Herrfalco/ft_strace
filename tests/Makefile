@@ -8,7 +8,7 @@ OBJS		=	$(NAMES:=.o)
 LIBS		=	-lpthread
 
 CC		=	gcc
-CFLAGS		=	-Wall -Wall -Wextra -m32
+CFLAGS		=	-Wall -Wall -Wextra #-m32
 
 all		:	$(NAMES)
 
