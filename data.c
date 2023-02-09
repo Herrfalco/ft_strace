@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 19:24:23 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/03 18:00:54 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/09 10:52:00 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2079,7 +2079,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "rseq",
-		.id = { 334, -1, -1, -1 },
+		.id = { 334, -1, -1, 386 },
 		.args = { AT_P, AT_H, AT_I, AT_H, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
