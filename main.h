@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 08:22:50 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 09:20:55 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 10:20:02 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct		main_dat_s {
 	sys_state_t		state;
 	const sysc_t	*sc;
 	const sysc_t	*old_sc;
+	arch_t			old_arch;
 }					main_dat_t;
 
 #endif // MAIN_H

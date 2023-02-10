@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:43:27 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 11:05:30 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 09:22:08 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int					arch_set(const char *path) {
 		default:
 			g_arch = ARCH_UNK;
 	}
+	close(fd);
 	return (0);
 }
 

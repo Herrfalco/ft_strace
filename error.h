@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:14:03 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/01 23:36:11 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 09:04:34 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define ERROR_H
 
 #include "incs.h"
+#include "arch.h"
 
 #define ERROR_NB		127
 #define FST_ERR_PTR		0xfffffffffffffdfc

@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 09:27:17 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 10:23:39 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,35 +26,44 @@ static void		wait_stop(pid_t pid, int *status) {
 	sigprocmask(SIG_BLOCK, &set, NULL);
 }
 
-int			handle_stop(main_dat_t *dat) {
+int			handle_stop(main_dat_t *dat, char **argv) {
 	uint8_t						regs[REGS_BUFF_SZ];
 	struct iovec				iov = { 
 		.iov_base = regs, .iov_len = REGS_BUFF_SZ
 	};
 
 	if ((dat->sig = WSTOPSIG(dat->status)) == SIGTRAP) {
+		ptrace(PTRACE_GETREGSET, dat->pid,
+				NT_PRSTATUS, &iov);
 		if (dat->state == S_CALL) {
-			ptrace(PTRACE_GETREGSET, dat->pid,
-					NT_PRSTATUS, &iov);
 			dat->sc = sysc_get(regs);
-			if (!dat->start && (!dat->sc
-					|| !strcmp(dat->sc->name, "execve")))
-				dat->start = 1;
-			if (dat->start) {
+			if (dat->start || !dat->sc
+					|| !strcmp(dat->sc->name, "execve")) {
 				sysc_name_print(dat->sc);
 				if (!sysc_restart(dat->sc, dat->old_sc)
 					&& (!dat->sc || dat->sc->pstate == S_CALL))
 					if (sysc_args_print(dat->sc, regs, dat->pid))
 						return (-1);
+				if (!dat->start) {
+					dat->start = 1;
+					if (arch_set(argv[1])
+							|| arch_get() == ARCH_UNK)
+						return (-1);
+				}
 			}
-		} else if (dat->start) {
+		} else {
 			dat->old_sc = dat->sc;
-			if (dat->sc && dat->sc->pstate == S_RET)
-				if (sysc_args_print(dat->sc, regs, dat->pid))
-					return (-1);
-			ptrace(PTRACE_GETREGSET, dat->pid,
-					NT_PRSTATUS, &iov);
-			sysc_ret_print(dat->sc, regs);
+			if (dat->start) {
+				if (dat->sc && dat->sc->pstate == S_RET)
+					if (sysc_args_print(dat->sc, regs, dat->pid))
+						return (-1);
+				sysc_ret_print(dat->sc, regs);
+			}
+			if (dat->old_arch != arch_get()) {
+				dat->old_arch = arch_get();
+				printf("[ Process PID=%d runs in %s bit mode. ]\n",
+					dat->pid, arch_64() ? "64" : "32");
+			}
 		}
 		dat->state ^= S_RET;
 		dat->sig = 0;
@@ -84,7 +93,8 @@ void		handle_exit(main_dat_t *dat) {
 }
 
 int			init_trace(main_dat_t *dat, char **argv, char **env) {
-	if (arch_set(argv[1]) || arch_get() == ARCH_UNK)
+	if (arch_set(argv[0])
+			|| (dat->old_arch = arch_get()) == ARCH_UNK)
 		return (-1);
 	if ((dat->pid = fork()) < 0)
 		return (-1);
@@ -113,7 +123,7 @@ int			main(int argc, char **argv, char **env) {
 		dat.sig = 0;
 		wait_stop(dat.pid, &dat.status);
 		if (WIFSTOPPED(dat.status)) {
-			if (handle_stop(&dat))
+			if (handle_stop(&dat, argv))
 				return (2);
 		} else if (dat.start && WIFSIGNALED(dat.status)) {
 			if (handle_kill(&dat))

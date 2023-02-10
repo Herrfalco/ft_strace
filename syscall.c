@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:05:33 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/03 17:24:47 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 09:01:20 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,8 @@ void		sysc_ret_print(const sysc_t *sc, void *regs) {
 					printf(" = 0x%lx\n", ret);
 				break;
 			default:
-				if ((int64_t)ret < 0)
+				if (arch_64() ? (int64_t)ret < 0
+						: (int32_t)ret < 0)
 					error_print(ret);
 				else
 					printf(" = %ld\n", ret);

@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 15:11:24 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/01 23:37:12 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 10:16:18 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,17 @@ void		error_print(int64_t ret) {
 	ret *= -1;
 	printf(" = -1 ");
 	for (i = 0; i < ERROR_NB; ++i) {
-		if ((uint64_t)ret == ERRORS[i]) {
+		if (arch_64() ? (uint64_t)ret == ERRORS[i]
+				: (uint32_t)ret == ERRORS[i]) {
 			printf("%s", ERRORS_STR[i]);
 			find = 1;
 		}
 	}
 	if (!find)
 		printf("%s", "UNKNOWN");
-	printf(" (%s)\n", ret >= ERESTARTSYS
+	printf(" (%s)\n", ret == ERESTARTSYS
+			|| ret == ERESTARTNOINTR
+			|| ret == ERESTARTNOHAND
+			|| ret == ERESTART_RESTARTBLOCK
 		? "Interrupted by signal" : strerror(ret));
 }

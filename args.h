@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:55:52 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 08:12:12 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 09:05:38 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define ARGS_H
 
 #include "col.h"
-#include "arch.h"
+#include "error.h"
 
 #define MAX_LC				4096
 #define ARG_TYP_NB			11

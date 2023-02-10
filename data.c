@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 19:24:23 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 11:34:15 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 09:14:31 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -895,8 +895,8 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "mmap2",
 		.id = { -1, -1, 192 },
-		.args = { 0 },
-		.ret = AT__,
+		.args = { AT_P, AT_I, AT_I, AT_I, AT_I, AT_H },
+		.ret = AT_P,
 		.pstate = S_CALL,
 	},{	.name = "modify_ldt",
 		.id = { 154, -1, 123 },
@@ -1465,7 +1465,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "set_thread_area",
 		.id = { 205, -1, 243 },
-		.args = { 0 },
+		.args = { AT_P, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "set_tid_address",
@@ -1740,7 +1740,7 @@ const sysc_t			SYSC[SYSC_NB] = {
 		.pstate = S_CALL,
 	},{	.name = "statx",
 		.id = { 332, 291, 383 },
-		.args = { 0 },
+		.args = { AT_I, AT_S, AT_I, AT_U, AT_P, 0 },
 		.ret = AT__,
 		.pstate = S_CALL,
 	},{	.name = "stime",
