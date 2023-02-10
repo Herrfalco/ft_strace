@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 15:11:24 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/10 10:16:18 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 10:42:14 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,21 +72,21 @@ static const char	*ERRORS_STR[] = {
 
 void		error_print(int64_t ret) {
 	uint8_t			i, find = 0;
+	uint64_t		err = arch_64()
+		? ret * -1 : (uint32_t)(ret * -1);
 
-	ret *= -1;
 	printf(" = -1 ");
 	for (i = 0; i < ERROR_NB; ++i) {
-		if (arch_64() ? (uint64_t)ret == ERRORS[i]
-				: (uint32_t)ret == ERRORS[i]) {
+		if (err == ERRORS[i]) {
 			printf("%s", ERRORS_STR[i]);
 			find = 1;
 		}
 	}
 	if (!find)
 		printf("%s", "UNKNOWN");
-	printf(" (%s)\n", ret == ERESTARTSYS
-			|| ret == ERESTARTNOINTR
-			|| ret == ERESTARTNOHAND
-			|| ret == ERESTART_RESTARTBLOCK
-		? "Interrupted by signal" : strerror(ret));
+	printf(" (%s)\n", err == ERESTARTSYS
+			|| err == ERESTARTNOINTR
+			|| err == ERESTARTNOHAND
+			|| err == ERESTART_RESTARTBLOCK
+		? "Interrupted by signal" : strerror(err));
 }
