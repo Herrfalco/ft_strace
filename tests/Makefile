@@ -6,17 +6,20 @@ NAMES		=	test_1 \
 SRCS		=	$(NAMES:=.c)
 OBJS		=	$(NAMES:=.o)
 LIBS		=	-lpthread
-
 CC		=	gcc
-CFLAGS		=	-Wall -Wall -Wextra -m32
+CFLAGS		=	-Wall -Wall -Wextra
+
+ifndef ARCH
+	ARCH	=	64
+endif
 
 all		:	$(NAMES)
 
 $(NAMES) : %	:	%.o
-			$(CC) $(CFLAGS) $< -o $@ $(LIBS)
+			$(CC) $(CFLAGS) -m$(ARCH) $< -o $@ $(LIBS)
 
 %.o		:	%.c
-			$(CC) $(CFLAGS) -c $< -o $@
+			$(CC) $(CFLAGS) -m$(ARCH) -c $< -o $@
 
 clean		:
 			$(RM) $(OBJS)
