@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/10 11:19:47 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 12:39:20 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ int			main(int argc, char **argv, char **env) {
 		.old_sc = NULL,
 	};
 
+	(void)argc;
 	if (trace_init(&dat, argv, env))
 		return (1);
 	while (42) {

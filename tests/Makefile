@@ -9,17 +9,13 @@ LIBS		=	-lpthread
 CC		=	gcc
 CFLAGS		=	-Wall -Wall -Wextra
 
-ifndef ARCH
-	ARCH	=	64
-endif
-
 all		:	$(NAMES)
 
 $(NAMES) : %	:	%.o
-			$(CC) $(CFLAGS) -m$(ARCH) $< -o $@ $(LIBS)
+			$(CC) $(CFLAGS) $(ARCH) $< -o $@ $(LIBS)
 
 %.o		:	%.c
-			$(CC) $(CFLAGS) -m$(ARCH) -c $< -o $@
+			$(CC) $(CFLAGS) $(ARCH) -c $< -o $@
 
 clean		:
 			$(RM) $(OBJS)
