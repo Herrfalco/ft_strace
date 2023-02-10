@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:43:27 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/10 09:22:08 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 11:32:25 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ static const uint8_t	g_regs_bind[ARCH_NB][REG_NB] = {
 	{ 6, 11, 0, 1, 2, 3, 4, 5 },
 };
 
-int					arch_set(const char *path) {
+void					arch_set(const char *path) {
 	int				fd;
 	Elf32_Ehdr		e_hdr;
 
 	if ((fd = open(path, O_RDONLY)) < 0)
-		return (-1);
+		return;
 	if (read(fd, &e_hdr, sizeof(Elf32_Ehdr))
 			!= sizeof(Elf32_Ehdr)) {
 		close(fd);
-		return (-1);
+		return;
 	}
 	switch (e_hdr.e_machine) {
 		case EM_386:
@@ -40,12 +40,10 @@ int					arch_set(const char *path) {
 			break;
 		case EM_AARCH64:
 			g_arch = ARCH_ARM_64;
-			break;
 		default:
-			g_arch = ARCH_UNK;
+			break;
 	}
 	close(fd);
-	return (0);
 }
 
 arch_t				arch_get(void) {

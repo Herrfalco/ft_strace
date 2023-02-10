@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:43:49 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 11:05:49 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 11:32:32 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef enum		arch_e {
 	ARCH_UNK,
 }					arch_t;
 
-int					arch_set(const char *path);
+void				arch_set(const char *path);
 arch_t				arch_get(void);
 int					arch_64(void);
 uint64_t			arch_get_reg(void *regs, uint8_t idx);

@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/10 11:04:59 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/10 11:19:47 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,7 @@ static int		trace_call(main_dat_t *dat, char **argv, uint8_t *regs) {
 				return (-1);
 		if (!dat->start) {
 			dat->start = 1;
-			if (arch_set(argv[1])
-					|| arch_get() == ARCH_UNK)
-				return (-1);
+			arch_set(argv[1]);
 		}
 	}
 	return (0);
@@ -126,7 +124,6 @@ int			main(int argc, char **argv, char **env) {
 		.old_sc = NULL,
 	};
 
-	(void)argc;
 	if (trace_init(&dat, argv, env))
 		return (1);
 	while (42) {
