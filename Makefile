@@ -1,12 +1,12 @@
 NAME	=	ft_strace
-SRCS	=	arch.c \
-		args.c \
-		col.c \
-		data.c \
-		main.c \
-		syscall.c \
-		error.c \
-		sig.c
+SRCS	=	srcs/arch.c \
+		srcs/args.c \
+		srcs/col.c \
+		srcs/data.c \
+		srcs/main.c \
+		srcs/syscall.c \
+		srcs/error.c \
+		srcs/sig.c
 OBJS	=	$(SRCS:.c=.o)
 CC	=	gcc
 CFLAGS	=	-Wall -Wall -Wextra
