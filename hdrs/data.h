@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:10:27 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/09 11:28:51 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/13 17:33:35 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 typedef enum		sys_state_e {
 	S_CALL,
 	S_RET,
+	S_NONE,
 }					sys_state_t;
 
 typedef struct		sysc_s {

@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/13 17:24:07 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/13 17:40:26 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ static ret_t	trace_stop(main_dat_t *dat, char **argv) {
 	};
 
 	if ((dat->sig = WSTOPSIG(dat->status)) == SIGTRAP) {
+		if (dat->state == S_NONE)
+			dat->state = S_CALL;
 		if (ptrace(PTRACE_GETREGSET, dat->pid,
 				NT_PRSTATUS, &iov))
 			return (ret_new(RT_REGS,
@@ -107,7 +109,7 @@ static ret_t	trace_stop(main_dat_t *dat, char **argv) {
 				return (ret);
 		} else if (ret_is_err((ret = trace_ret(dat, regs))))
 			return (ret);
-		dat->state ^= S_RET;
+		++dat->state;
 		dat->sig = 0;
 	} else if (dat->start)
 		printf("--- %s ---\n", sig_name(dat->sig));
@@ -123,7 +125,8 @@ static ret_t	trace_kill(main_dat_t *dat) {
 		if (ret_is_err((ret
 				= sysc_args_print(dat->sc, NULL, dat->pid))))
 			return (ret);
-	sysc_ret_print(dat->sc, NULL);
+	if (dat->state != S_NONE)
+		sysc_ret_print(dat->sc, NULL);
 	printf("+++ killed by %s %s+++\n", sig_name(dat->sig),
 			sig_is_core(WTERMSIG(dat->status))
 			? "(core dumped) " : "");
@@ -135,7 +138,8 @@ static ret_t	trace_kill(main_dat_t *dat) {
 static int		trace_exit(main_dat_t *dat) {
 	int			ret;
 
-	sysc_ret_print(dat->sc, NULL);
+	if (dat->state != S_NONE)
+		sysc_ret_print(dat->sc, NULL);
 	printf("+++ exited with %d +++\n",
 			(ret = WEXITSTATUS(dat->status)));
 	return (ret);
@@ -145,7 +149,7 @@ int			main(int argc, char **argv, char **env) {
 	ret_t						ret;
 	main_dat_t					dat = { 
 		.start = 0,
-		.state = S_CALL,
+		.state = S_NONE,
 		.old_sc = NULL,
 	};
 
