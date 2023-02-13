@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:31 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/13 13:04:40 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/13 17:24:07 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,16 +115,15 @@ static ret_t	trace_stop(main_dat_t *dat, char **argv) {
 }
 
 static ret_t	trace_kill(main_dat_t *dat) {
-	ret_t			ret;
 	int64_t			pid;
+	ret_t			ret;
 
 	dat->sig = WTERMSIG(dat->status);
-	if (dat->sc && dat->sc->pstate == S_RET) {
+	if (dat->sc && dat->sc->pstate == S_RET)
 		if (ret_is_err((ret
-			= sysc_args_print(dat->sc, NULL, dat->pid))))
+				= sysc_args_print(dat->sc, NULL, dat->pid))))
 			return (ret);
-		sysc_ret_print(dat->sc, NULL);
-	}
+	sysc_ret_print(dat->sc, NULL);
 	printf("+++ killed by %s %s+++\n", sig_name(dat->sig),
 			sig_is_core(WTERMSIG(dat->status))
 			? "(core dumped) " : "");
