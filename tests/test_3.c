@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test_3.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/24 16:18:33 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/24 16:18:58 by fcadet           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +7,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-int	main(void) {
+int
+main(int argc, char *argv[])
+{
 	char *c;
 	int fd;
 
@@ -36,6 +26,5 @@ int	main(void) {
 			if ((fd = open(c, 0)) != -1)
 				close(fd);
 	}
-	return (0);
+	return 0;
 }
-

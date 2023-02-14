@@ -7,7 +7,7 @@ SRCS		=	$(NAMES:=.c)
 OBJS		=	$(NAMES:=.o)
 LIBS		=	-lpthread
 CC		=	gcc
-CFLAGS		=	-Wall -Wall -Wextra #-m32
+CFLAGS		=	#-m32
 
 all		:	$(NAMES)
 

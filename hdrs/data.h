@@ -6,7 +6,7 @@
 /*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:10:27 by fcadet            #+#    #+#             */
-/*   Updated: 2023/02/13 17:33:35 by fcadet           ###   ########.fr       */
+/*   Updated: 2023/02/14 09:00:59 by fcadet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define DATA_H
 
 #define ARG_NB		6
-#define SYSC_NB		401
+#define SYSC_NB		402
 
 #include "args.h"
 

@@ -6,12 +6,11 @@
 #include <sys/wait.h>
 
 static void *start0(void *arg) {
-	(void)arg;
 	pause();
 	assert(0);
 }
 
-int	main(void) {
+int main(int argc, char *argv[]) {
 	pthread_t thread0;
 	pid_t child, got_pid;
 	int status;

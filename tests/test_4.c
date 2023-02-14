@@ -1,27 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test_4.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: fcadet <fcadet@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/24 16:19:03 by fcadet            #+#    #+#             */
-/*   Updated: 2023/01/24 16:20:12 by fcadet           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 
-void null_handler(int sig) {
-	(void)sig;
-	return;
-}
+void null_handler(int sig) { }
 
-int main(void) {
+int main(int argc, char *argv[]) {
 	sigset_t set;
-
 	sigemptyset(&set);
 	sigaddset(&set, SIGCHLD);
 	sigaddset(&set, 33);
