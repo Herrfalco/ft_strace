@@ -10,7 +10,7 @@ SRCS	=	srcs/arch.c \
 		srcs/fn_ret.c
 OBJS	=	$(SRCS:.c=.o)
 CC	=	gcc
-CFLAGS	=	-Wall -Wall -Wextra
+CFLAGS	=	-Wall -Wextra -Werror
 
 all	:	$(NAME)
 
